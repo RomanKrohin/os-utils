@@ -9,13 +9,12 @@
 #include <cstdlib>
 #include <malloc.h>
 
-#define STACK_SIZE (1024 * 1024)  // Размер стека больше не ограничен
+#define STACK_SIZE (1024 * 1024) 
 
-// Функция для выполнения команд в дочернем процессе
 int execute_command(void *args) {
     char **cmd_args = static_cast<char**>(args);
-    execvp(cmd_args[0], cmd_args);  // Выполнение команды
-    perror("execvp");               // Если execvp не сработает
+    execvp(cmd_args[0], cmd_args);
+    perror("execvp");
     return 1;
 }
 
