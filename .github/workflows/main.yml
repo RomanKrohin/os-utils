@@ -35,7 +35,6 @@ jobs:
 
           git diff --exit-code || (echo "Code is not formatted correctly. Please run clang-format." && exit 1)
 
-
   lint:
     runs-on: ubuntu-latest
     needs: format
@@ -48,4 +47,10 @@ jobs:
 
       - name: Run clang-tidy
         run: |
-          find . -name "*.cpp" -o -name "*.h" | xargs clang-tidy -- -std=c++17
+          # Найти файлы .cpp и .h и запустить clang-tidy, если они есть
+          files=$(find . -name "*.cpp" -o -name "*.h")
+          if [ -n "$files" ]; then
+            echo "$files" | xargs clang-tidy -- -std=c++17
+          else
+            echo "No files to lint."
+          fi
