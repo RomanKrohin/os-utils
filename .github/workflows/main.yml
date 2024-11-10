@@ -31,14 +31,17 @@ jobs:
           # Найти все файлы .cpp и .h и выполнить линтинг с помощью clang-tidy
           find . -type f \( -name "*.cpp" -o -name "*.h" \) -exec clang-tidy {} -- -std=c++17 \;
 
-      - name: Check for formatting changes
-        env:
-         GH_TOKEN: ${{ secrets.GH_TOKEN }}
+      - name: Configure git for GitHub Actions
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          if ! git diff --quiet; then
-            git add .
-            git commit -m "Apply clang-format"
-            git push https://${GH_TOKEN}@github.com/${{ github.repository }}.git HEAD:${{ github.ref_name }}
-          fi
+
+      - name: Check for formatting changes
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        run: |
+         if ! git diff --quiet; then
+          git add .
+          git commit -m "Apply clang-format"
+          git push https://${GH_TOKEN}@github.com/${{ github.repository }}.git HEAD:${{ github.ref_name }}
+         fi
