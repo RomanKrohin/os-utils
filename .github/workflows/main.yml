@@ -34,11 +34,11 @@ jobs:
       - name: Check for formatting changes
         env:
          GH_TOKEN: ${{ secrets.GH_TOKEN }}
-         run: |
-           git config --global user.name "github-actions[bot]"
-           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-           if ! git diff --quiet; then
-             git add .
-             git commit -m "Apply clang-format"
-             git push https://${GH_TOKEN}@github.com/${{ github.repository }}.git HEAD:${{ github.ref_name }}
-           fi
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          if ! git diff --quiet; then
+            git add .
+            git commit -m "Apply clang-format"
+            git push https://${GH_TOKEN}@github.com/${{ github.repository }}.git HEAD:${{ github.ref_name }}
+          fi
