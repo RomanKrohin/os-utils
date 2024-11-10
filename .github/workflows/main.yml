@@ -1,52 +1,43 @@
-name: C/C++ CI
+name: Format and Lint C++ Files
 
 on:
   push:
-    branches: 
+    branches:
       - '*'
   pull_request:
     branches:
       - '*'
 
 jobs:
-  format:
+  lint_and_format:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
-      - name: Install clang-format
-        run: sudo apt-get install clang-format
-
-      - name: Run clang-format
+      - name: Install dependencies
         run: |
-          # Найти и форматировать файлы .cpp и .h в корневом каталоге и подкаталогах
-          find . -name "*.cpp" -exec clang-format -i {} \; || echo "No .cpp files found."
-          find . -name "*.h" -exec clang-format -i {} \; || echo "No .h files found."
+          sudo apt update
+          sudo apt install -y clang-format clang-tidy
 
-          # Проверка на форматирование
-          if ! git diff --exit-code; then
-            echo "Code is not formatted correctly. Please run clang-format."
-            echo "You can format your code with: 'clang-format -i <file>'"
-            exit 0  # Не завершать с ошибкой
-          fi
-
-  lint:
-    runs-on: ubuntu-latest
-    needs: format
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Install clang-tidy
-        run: sudo apt-get install clang-tidy
-
-      - name: Run clang-tidy
+      - name: Find and format all .cpp and .h files
         run: |
-          # Найти файлы .cpp и .h и запустить clang-tidy, если они есть
-          files=$(find . -name "*.cpp" -o -name "*.h")
-          if [ -n "$files" ]; then
-            echo "$files" | xargs clang-tidy -- -std=c++17
-          else
-            echo "No files to lint."
+          # Найти все файлы .cpp и .h и отформатировать их с помощью clang-format
+          find . -type f \( -name "*.cpp" -o -name "*.h" \) -exec clang-format -i {} \;
+
+      - name: Run clang-tidy lint on all .cpp and .h files
+        run: |
+          # Найти все файлы .cpp и .h и выполнить линтинг с помощью clang-tidy
+          find . -type f \( -name "*.cpp" -o -name "*.h" \) -exec clang-tidy {} -- -std=c++17 \;
+
+      - name: Check for formatting changes
+        run: |
+          # Проверить, были ли изменения в результате форматирования
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          if ! git diff --quiet; then
+            git add .
+            git commit -m "Apply clang-format"
+            git push
           fi
