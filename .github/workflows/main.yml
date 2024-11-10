@@ -20,7 +20,7 @@ jobs:
 
       - name: Run clang-format
         run: |
-          # Найти и форматировать файлы .cpp и .h
+          # Найти и форматировать файлы .cpp и .h в корневом каталоге и подкаталогах
           find . -name "*.cpp" -exec clang-format -i {} \; || echo "No .cpp files found."
           find . -name "*.h" -exec clang-format -i {} \; || echo "No .h files found."
 
