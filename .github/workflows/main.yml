@@ -20,18 +20,9 @@ jobs:
 
       - name: Run clang-format
         run: |
-          # Проверка наличия файлов .cpp и .h
-          if ls **/*.cpp 1> /dev/null 2>&1; then
-            clang-format -i **/*.cpp
-          else
-            echo "No .cpp files found."
-          fi
-
-          if ls **/*.h 1> /dev/null 2>&1; then
-            clang-format -i **/*.h
-          else
-            echo "No .h files found."
-          fi
+          # Найти и форматировать файлы .cpp и .h
+          find . -name "*.cpp" -exec clang-format -i {} \; || echo "No .cpp files found."
+          find . -name "*.h" -exec clang-format -i {} \; || echo "No .h files found."
 
           git diff --exit-code || (echo "Code is not formatted correctly. Please run clang-format." && exit 1)
 
