@@ -19,7 +19,6 @@ int main() {
     }
     std::cout << "Прочитано " << bytes_read << " байт: " << read_buffer << "\n";
 
-    // Перемещаем указатель в конец файла перед записью
     lab2_lseek(fd, 0, SEEK_END);
 
     const char *write_data = "a123123";
