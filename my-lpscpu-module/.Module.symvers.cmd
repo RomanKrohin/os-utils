@@ -1,0 +1,1 @@
+savedcmd_/home/roman/os-utils/my-lpscpu-module/Module.symvers :=  scripts/mod/modpost -M -m -a      -o /home/roman/os-utils/my-lpscpu-module/Module.symvers -T /home/roman/os-utils/my-lpscpu-module/modules.order -i Module.symvers -e 
